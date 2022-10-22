@@ -9,7 +9,7 @@ int verifyLetter(char *wordToDiscover, char *maskedWord, int key){
 
 	for (size_t i=0; i<word_size; i++){
 		if (wordToDiscover[i] == (char)key){
-			printf("find\n");
+			// printf("find\n");
 			maskedWord[i] = (char)key;
 			ret++;
 		}

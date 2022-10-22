@@ -14,7 +14,11 @@
 
 int main(void)
 {
-	int pos=0, try=15, key;
+	int pos=0, try=5, key;
+	int spd_frames = 8, acc_frames = 0, curr_frame = 0;
+
+	int actry = try;
+
 	bool flag = true;
 	char **words = malloc(sizeof(char *)*LIN);
 	for (int i=0; i<LIN; i++) words[i] = malloc(sizeof(char)*COL);
@@ -34,8 +38,6 @@ int main(void)
 
 	strcpy(wordToDiscover, getWord(words));
 
-	printf("%s\n", wordToDiscover);
-
 	free(words);
 	size_t ws = strlen(wordToDiscover);
 	char *maskedWord = malloc(sizeof(char)*ws+1);
@@ -44,36 +46,56 @@ int main(void)
 	maskedWord[ws]='\0';
 
 	InitWindow(WIDTH, HEIGHT, NAME);
-	SetTargetFPS(10);
 
-	while (!WindowShouldClose()){
+	Texture2D hangman = LoadTexture("./img/boneco_6_grupo_no_bg.png");
+	float hgm_width  = hangman.width;
+	float hgm_height = hangman.height;
+
+	Vector2 position = { (float)WIDTH/3+35, (float)HEIGHT/3-50 };
+	Rectangle frame_rec = { 0.0f, 0.0f, (float)hgm_width/6, (float)hgm_height };
+
+	SetTargetFPS(60);
+	while (!WindowShouldClose())
+	{
+		acc_frames++;
+		if (try < actry && acc_frames >= (60/spd_frames)){
+			acc_frames = 0;
+			curr_frame++;
+			if (curr_frame > 5) curr_frame = 0;
+			frame_rec.x = (float)curr_frame*(float)hgm_width/6;
+			actry--;
+		}
 
 		BeginDrawing();
 			if (!flag) break;
 
+			// DrawText(wordToDiscover, WIDTH/2-40, HEIGHT/2, 20, WHITE);
 			DrawText(NAME, WIDTH/3, 10, 30, WHITE);
-			DrawText(wordToDiscover, WIDTH/2-40, HEIGHT/2, 20, WHITE);
-			DrawText(TextFormat("[%d] %s", try, maskedWord), WIDTH/2-45, HEIGHT/2+40, 20, WHITE);
+			DrawText(TextFormat("[%d] %s", try, maskedWord),
+					WIDTH/2-45-(2*strlen(maskedWord)), HEIGHT/2+60, 20, WHITE);
 
 			if (try <= 0){
-				DrawText("voce perdeu: zero tentativas!", WIDTH/3-30, HEIGHT/3, 20, WHITE );
+				DrawText("voce perdeu: zero tentativas!", WIDTH/3-50, HEIGHT/2+10, 20, WHITE );
 				flag = false;
 			}
 
 			if (strcmp(maskedWord, wordToDiscover) == 0){
-				DrawText("voce acertou", WIDTH/2-60, HEIGHT/3, 20, WHITE );
+				DrawText("voce acertou", WIDTH/3+30, HEIGHT/2+20, 20, WHITE );
 				flag = false;
 			}
 
 			ClearBackground(BLACK);
+
 			if ((key = GetCharPressed()) >= 32 && key <= 126)
 				fillWord(wordToDiscover, maskedWord, &pos, &try, key);
 
+			DrawTextureRec(hangman, frame_rec, position, WHITE);
 		EndDrawing();
 	}
 
 	sleep(2);
 	
+	UnloadTexture(hangman);
 	CloseWindow();
 
 	printf("T: %s\n", wordToDiscover);
