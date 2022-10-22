@@ -1,7 +1,7 @@
 CC := gcc
 TARGET := forca
 CFLAGS := -Wall -Werror -Wextra
-LFLAGS := -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+LFLAGS := -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 -O2
 SRC := ./src/*.c
 
 all: $(TARGET)
