@@ -20,9 +20,17 @@ int main(void)
 	int actry = try;
 
 	bool flag = true;
+
+	char *rep = malloc(sizeof(char)*6); 
+	if (!rep){
+		perror("malloc");
+		exit(EXIT_FAILURE);
+	}
+
+	printf("%s\n", rep);
+
 	char **words = malloc(sizeof(char *)*LIN);
 	for (int i=0; i<LIN; i++) words[i] = malloc(sizeof(char)*COL);
-
 	if (!words){
 		perror("malloc");
 		exit(EXIT_FAILURE);
@@ -72,10 +80,15 @@ int main(void)
 			// DrawText(wordToDiscover, WIDTH/2-40, HEIGHT/2, 20, WHITE);
 			DrawText(NAME, WIDTH/3, 10, 30, WHITE);
 			DrawText(TextFormat("[%d] %s", try, maskedWord),
-					WIDTH/2-45-(2*strlen(maskedWord)), HEIGHT/2+60, 20, WHITE);
+					WIDTH/2-40-(3*strlen(maskedWord)), HEIGHT/2+70, 20, WHITE);
+
+			DrawText(TextFormat("r: %s", rep),
+					WIDTH/2-40-(2*strlen(rep)), HEIGHT-50, 20, WHITE);
 
 			if (try <= 0){
 				DrawText("voce perdeu: zero tentativas!", WIDTH/3-50, HEIGHT/2+10, 20, WHITE );
+				DrawText(TextFormat("%s", wordToDiscover), 
+						WIDTH/3+30+(2*strlen(maskedWord)), HEIGHT/2+30, 20, WHITE );
 				flag = false;
 			}
 
@@ -87,7 +100,7 @@ int main(void)
 			ClearBackground(BLACK);
 
 			if ((key = GetCharPressed()) >= 32 && key <= 126)
-				fillWord(wordToDiscover, maskedWord, &pos, &try, key);
+				fillWord(wordToDiscover, maskedWord, rep, &pos, &try, key);
 
 			DrawTextureRec(hangman, frame_rec, position, WHITE);
 		EndDrawing();
@@ -100,6 +113,7 @@ int main(void)
 
 	printf("T: %s\n", wordToDiscover);
 	printf("R: %s\n", maskedWord);
+	printf("E: %s\n", rep);
 
 	return(EXIT_SUCCESS);
 }
