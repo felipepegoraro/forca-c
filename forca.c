@@ -12,6 +12,8 @@
 #define HEIGHT 400
 #define   NAME "Jogo da Forca"
 
+// Felipe Pegoraro, 22/10/22
+
 int main(void)
 {
 	int pos=0, try=5, key;
